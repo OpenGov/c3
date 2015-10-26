@@ -359,12 +359,18 @@ c3_chart_internal_fn.convertValuesToStep = function (values) {
 
     return converted;
 };
-c3_chart_internal_fn.updateDataAttributes = function (name, attrs) {
+c3_chart_internal_fn.updateDataAttributes = function (name, attrs, redraw) {
     var $$ = this, config = $$.config, current = config['data_' + name];
-    if (typeof attrs === 'undefined') { return current; }
-    Object.keys(attrs).forEach(function (id) {
-        current[id] = attrs[id];
-    });
-    $$.redraw({withLegend: true});
+
+    if (!isUndefined(attrs)) {
+        Object.keys(attrs).forEach(function (id) {
+            current[id] = attrs[id];
+        });
+
+        if (!isUndefined(redraw) ? redraw : true) {
+            $$.redraw({withLegend: true});
+        }
+    }
+
     return current;
 };

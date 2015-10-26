@@ -26,6 +26,14 @@ c3_chart_fn.load = function (args) {
             config.data_colors[id] = args.colors[id];
         });
     }
+    // update names if exists
+    if ('names' in args) {
+        this.data.names(args.names, false);
+    }
+    // update groups if exists
+    if ('groups' in args) {
+        this.groups(args.groups, false);
+    }
     // use cache if exists
     if ('cacheIds' in args && $$.hasCaches(args.cacheIds)) {
         $$.load($$.getCaches(args.cacheIds), args.done);
@@ -33,8 +41,12 @@ c3_chart_fn.load = function (args) {
     }
     // unload if needed
     if ('unload' in args) {
+        var idsToUnload = $$.mapToTargetIds((typeof args.unload === 'boolean' && args.unload)
+            ? null
+            : args.unload);
+
         // TODO: do not unload if target will load (included in url/rows/columns)
-        $$.unload($$.mapToTargetIds((typeof args.unload === 'boolean' && args.unload) ? null : args.unload), function () {
+        $$.unload(idsToUnload, function () {
             $$.loadFromArgs(args);
         });
     } else {

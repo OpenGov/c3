@@ -15,13 +15,13 @@ c3_chart_fn.data.values = function (targetId) {
     }
     return values;
 };
-c3_chart_fn.data.names = function (names) {
+c3_chart_fn.data.names = function (names, redraw) {
     this.internal.clearLegendItemTextBoxCache();
-    return this.internal.updateDataAttributes('names', names);
+    return this.internal.updateDataAttributes('names', names, !isUndefined(redraw) ? redraw : true);
 };
-c3_chart_fn.data.colors = function (colors) {
-    return this.internal.updateDataAttributes('colors', colors);
+c3_chart_fn.data.colors = function (colors, redraw) {
+    return this.internal.updateDataAttributes('colors', colors, !isUndefined(redraw) ? redraw : true);
 };
-c3_chart_fn.data.axes = function (axes) {
-    return this.internal.updateDataAttributes('axes', axes);
+c3_chart_fn.data.axes = function (axes, redraw) {
+    return this.internal.updateDataAttributes('axes', axes, !isUndefined(redraw) ? redraw : true);
 };

@@ -2008,13 +2008,19 @@
 
         return converted;
     };
-    c3_chart_internal_fn.updateDataAttributes = function (name, attrs) {
+    c3_chart_internal_fn.updateDataAttributes = function (name, attrs, redraw) {
         var $$ = this, config = $$.config, current = config['data_' + name];
-        if (typeof attrs === 'undefined') { return current; }
-        Object.keys(attrs).forEach(function (id) {
-            current[id] = attrs[id];
-        });
-        $$.redraw({withLegend: true});
+
+        if (!isUndefined(attrs)) {
+            Object.keys(attrs).forEach(function (id) {
+                current[id] = attrs[id];
+            });
+
+            if (!isUndefined(redraw) ? redraw : true) {
+                $$.redraw({withLegend: true});
+            }
+        }
+
         return current;
     };
 
@@ -6239,6 +6245,14 @@
                 config.data_colors[id] = args.colors[id];
             });
         }
+        // update names if exists
+        if ('names' in args) {
+            this.data.names(args.names, false);
+        }
+        // update groups if exists
+        if ('groups' in args) {
+            this.groups(args.groups, false);
+        }
         // use cache if exists
         if ('cacheIds' in args && $$.hasCaches(args.cacheIds)) {
             $$.load($$.getCaches(args.cacheIds), args.done);
@@ -6246,8 +6260,12 @@
         }
         // unload if needed
         if ('unload' in args) {
+            var idsToUnload = $$.mapToTargetIds((typeof args.unload === 'boolean' && args.unload)
+                ? null
+                : args.unload);
+
             // TODO: do not unload if target will load (included in url/rows/columns)
-            $$.unload($$.mapToTargetIds((typeof args.unload === 'boolean' && args.unload) ? null : args.unload), function () {
+            $$.unload(idsToUnload, function () {
                 $$.loadFromArgs(args);
             });
         } else {
@@ -6634,11 +6652,17 @@
         $$.updateAndRedraw(options);
     };
 
-    c3_chart_fn.groups = function (groups) {
+    c3_chart_fn.groups = function (groups, redraw) {
         var $$ = this.internal, config = $$.config;
-        if (isUndefined(groups)) { return config.data_groups; }
-        config.data_groups = groups;
-        $$.redraw();
+
+        if (!isUndefined(groups)) {
+          config.data_groups = groups;
+
+          if (!isUndefined(redraw) ? redraw : true) {
+            $$.redraw();
+          }
+        }
+
         return config.data_groups;
     };
 
@@ -6732,15 +6756,15 @@
         }
         return values;
     };
-    c3_chart_fn.data.names = function (names) {
+    c3_chart_fn.data.names = function (names, redraw) {
         this.internal.clearLegendItemTextBoxCache();
-        return this.internal.updateDataAttributes('names', names);
+        return this.internal.updateDataAttributes('names', names, !isUndefined(redraw) ? redraw : true);
     };
-    c3_chart_fn.data.colors = function (colors) {
-        return this.internal.updateDataAttributes('colors', colors);
+    c3_chart_fn.data.colors = function (colors, redraw) {
+        return this.internal.updateDataAttributes('colors', colors, !isUndefined(redraw) ? redraw : true);
     };
-    c3_chart_fn.data.axes = function (axes) {
-        return this.internal.updateDataAttributes('axes', axes);
+    c3_chart_fn.data.axes = function (axes, redraw) {
+        return this.internal.updateDataAttributes('axes', axes, !isUndefined(redraw) ? redraw : true);
     };
 
     c3_chart_fn.category = function (i, category) {
