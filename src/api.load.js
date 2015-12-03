@@ -26,6 +26,12 @@ c3_chart_fn.load = function (args) {
             config.data_colors[id] = args.colors[id];
         });
     }
+    // update calculateOpacity if exists
+    if ('calculateOpacity' in args) {
+        Object.keys(args.calculateOpacity).forEach(function (id) {
+            config.data_calculateOpacity[id] = args.calculateOpacity[id];
+        });
+    }
     // update names if exists
     if ('names' in args) {
         this.data.names(args.names, false);

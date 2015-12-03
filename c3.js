@@ -787,7 +787,7 @@
         return "translate(" + x + "," + y + ")";
     };
     c3_chart_internal_fn.initialOpacity = function (d) {
-        return d.value !== null && this.withoutFadeIn[d.id] ? 1 : 0;
+        return d.value !== null && this.withoutFadeIn[d.id] ? this.opacity(d) : 0;
     };
     c3_chart_internal_fn.initialOpacityForCircle = function (d) {
         return d.value !== null && this.withoutFadeIn[d.id] ? this.opacityForCircle(d) : 0;
@@ -6270,6 +6270,12 @@
         if ('colors' in args) {
             Object.keys(args.colors).forEach(function (id) {
                 config.data_colors[id] = args.colors[id];
+            });
+        }
+        // update calculateOpacity if exists
+        if ('calculateOpacity' in args) {
+            Object.keys(args.calculateOpacity).forEach(function (id) {
+                config.data_calculateOpacity[id] = args.calculateOpacity[id];
             });
         }
         // update names if exists
