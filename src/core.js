@@ -121,6 +121,7 @@ c3_chart_internal_fn.initParams = function () {
 
     $$.color = $$.generateColor();
     $$.levelColor = $$.generateLevelColor();
+    $$.opacity == $$.generateOpacity();
 
     $$.dataTimeFormat = config.data_xLocaltime ? d3.time.format : d3.time.format.utc;
     $$.axisTimeFormat = config.axis_x_localtime ? d3.time.format : d3.time.format.utc;

@@ -44,3 +44,25 @@ c3_chart_internal_fn.generateLevelColor = function () {
         return color;
     } : null;
 };
+c3_chart_internal_fn.generateOpacity = function () {
+    var $$ = this, config = $$.config,
+        opacity = config.data_opacity,
+        callback = config.data_calculateOpacity;
+
+    return function (d) {
+        var id = d.id || (d.data && d.data.id) || d;
+
+        // if callback function is provided
+        if (callback[id] instanceof Function) {
+            return callback[id](d);
+        }
+        // if opacity is specified
+        else if (opacity !== undefined) {
+            return opacity;
+        }
+        // default
+        else {
+            return 1;
+        }
+    }
+};

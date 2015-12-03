@@ -32,7 +32,7 @@ c3_chart_internal_fn.updateBar = function (durationForExit) {
         .data(barData);
     $$.mainBar.enter().append('path')
         .attr("class", classBar)
-        .style("stroke", color)
+        .style("stroke", 'none')
         .style("fill", color);
     $$.mainBar
         .style("opacity", initialOpacity);
@@ -45,7 +45,7 @@ c3_chart_internal_fn.redrawBar = function (drawBar, withTransition) {
         (withTransition ? this.mainBar.transition(Math.random().toString()) : this.mainBar)
             .attr('d', drawBar)
             .style("fill", this.color)
-            .style("opacity", 1)
+            .style("opacity", this.opacity)
     ];
 };
 c3_chart_internal_fn.getBarW = function (axis, barTargetsNum) {

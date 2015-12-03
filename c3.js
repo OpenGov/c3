@@ -126,6 +126,7 @@
 
         $$.color = $$.generateColor();
         $$.levelColor = $$.generateLevelColor();
+        $$.opacity = $$.generateOpacity();
 
         $$.dataTimeFormat = config.data_xLocaltime ? d3.time.format : d3.time.format.utc;
         $$.axisTimeFormat = config.axis_x_localtime ? d3.time.format : d3.time.format.utc;
@@ -1110,6 +1111,8 @@
             data_regions: {},
             data_color: undefined,
             data_colors: {},
+            data_opacity: undefined,
+            data_calculateOpacity: {},
             data_hide: false,
             data_filter: undefined,
             data_selection_enabled: false,
@@ -1310,6 +1313,7 @@
                 return undefined;
             }
         }
+
         Object.keys(this_config).forEach(function (key) {
             target = config;
             keys = key.split('_');
@@ -2332,6 +2336,7 @@
                 .classed(CLASS.eventRectsMultiple, isMultipleX)
                 .classed(CLASS.eventRectsSingle, !isMultipleX);
 
+
         // clear old rects
         eventRects.selectAll('.' + CLASS.eventRect).remove();
 
@@ -3267,7 +3272,7 @@
             .data(barData);
         $$.mainBar.enter().append('path')
             .attr("class", classBar)
-            .style("stroke", color)
+            .style("stroke", 'none')
             .style("fill", color);
         $$.mainBar
             .style("opacity", initialOpacity);
@@ -3280,7 +3285,7 @@
             (withTransition ? this.mainBar.transition(Math.random().toString()) : this.mainBar)
                 .attr('d', drawBar)
                 .style("fill", this.color)
-                .style("opacity", 1)
+                .style("opacity", this.opacity)
         ];
     };
     c3_chart_internal_fn.getBarW = function (axis, barTargetsNum) {
@@ -5765,6 +5770,28 @@
             }
             return color;
         } : null;
+    };
+    c3_chart_internal_fn.generateOpacity = function () {
+        var $$ = this, config = $$.config,
+            opacity = config.data_opacity,
+            callback = config.data_calculateOpacity;
+
+        return function (d) {
+            var id = d.id || (d.data && d.data.id) || d;
+
+            // if callback function is provided
+            if (callback[id] instanceof Function) {
+                return callback[id](d);
+            }
+            // if opacity is specified
+            else if (opacity !== undefined) {
+                return opacity;
+            }
+            // default
+            else {
+                return 1;
+            }
+        }
     };
 
     c3_chart_internal_fn.getYFormat = function (forArc) {
