@@ -1313,7 +1313,6 @@
                 return undefined;
             }
         }
-
         Object.keys(this_config).forEach(function (key) {
             target = config;
             keys = key.split('_');
@@ -2335,7 +2334,6 @@
                 .style('cursor', config.zoom_enabled ? config.axis_rotated ? 'ns-resize' : 'ew-resize' : null)
                 .classed(CLASS.eventRectsMultiple, isMultipleX)
                 .classed(CLASS.eventRectsSingle, !isMultipleX);
-
 
         // clear old rects
         eventRects.selectAll('.' + CLASS.eventRect).remove();
@@ -7125,13 +7123,14 @@
                     function split(splitted, text) {
                         spaceIndex = undefined;
                         for (var i = 1; i < text.length; i++) {
-                            if (text.charAt(i) === ' ') {
+                            var currentChar = text.charAt(i);
+                            if (currentChar === ' ' || currentChar === '\n') {
                                 spaceIndex = i;
                             }
                             subtext = text.substr(0, i + 1);
                             textWidth = sizeFor1Char.w * subtext.length;
-                            // if text width gets over tick width, split by space index or crrent index
-                            if (maxWidth < textWidth) {
+                            // if text width gets over tick width OR we have reached a newline character, split by space index or current index
+                            if (currentChar === '\n' || maxWidth < textWidth) {
                                 return split(
                                     splitted.concat(text.substr(0, spaceIndex ? spaceIndex : i)),
                                     text.slice(spaceIndex ? spaceIndex + 1 : i)
